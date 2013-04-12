@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<project name="custom-svc-msgs" default="dist" basedir=".">
+    <property name="src" value="./src"/>
+    <property name="build" value="./build"/>
+    <property name="dist" value="./dist"/>
+    <property name="compile.debug" value="true"/>
+
+    <property name="tc.home" value="../TeamCity"/>
+    <property name="tc.data.dir" value="BuildServer"/>
+    <property name="tc.lib" value="${tc.home}/webapps/ROOT/WEB-INF/lib"/>
+    <property name="deploy.dir" value="${tc.data.dir}/plugins"/>
+
+    <path id="compile.classpath">
+        <fileset dir="${tc.lib}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="lib">
+            <include name="j2ee.jar"/>
+        </fileset>
+    </path>
+
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src}"
+               destdir="${build}"
+               debug="${compile.debug}"
+               includeantruntime="false">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+
+    <target name="init">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="dist" depends="compile">
+
+        <jar destfile="${dist}/server/custom-svc-msgs.jar" basedir="build">
+            <metainf dir="META-INF">
+                <include name="*"/>
+            </metainf>
+        </jar>
+
+        <jar destfile="${dist}/server/custom-svc-msgs-src.jar" basedir="src">
+            <metainf dir="META-INF">
+                <include name="*"/>
+            </metainf>
+        </jar>
+
+        <copy file="src/teamcity-plugin.xml" todir="${dist}"/>
+
+        <zip destfile="${dist}/custom-svc-msgs.zip" basedir="${dist}" includes="**/*" excludes="*.zip"/>
+    </target>
+
+    <target name="clean" description="Removes previous build">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+</project>
+
