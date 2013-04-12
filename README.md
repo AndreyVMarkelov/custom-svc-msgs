@@ -12,12 +12,12 @@ Background
 An FPGA fitting run may need to execute several times (with slightly differing parameters) before finding a solution.
 
  
-Given that each attempt can chew up a lot of disk space and may take up to several hours to succeed, it makes sense to run several attempts (say, 10) at the same time, so that they may run unattended and in parallel.  Supposing a pool of several agents assigned to my FPGA project, and supposing a build configuration for each FPGA run I would like to attempt, I can configure and launch all the build configurations at once, and have the first successful attempt stop all the others (or remove them from the queue if they've not yet started). 
+Given that each attempt can chew up a lot of disk space and may take up to several hours to succeed, it makes sense to run several attempts at the same time, so that they may run unattended and in parallel.  Supposing a pool of several agents assigned to my FPGA project, and supposing a build configuration for each FPGA run I would like to attempt, I can configure and launch all the build configurations at once, and have the first successful attempt stop all the others (or remove them from the queue if they've not yet started). 
 
 
 Overview
 ------
-The **custom-svc-msgs** plugin listens via the [ServiceMessageTranslator](http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/messages/serviceMessages/ServiceMessageTranslator.html) interface for messages sent according to the [TeamCity Service Message API](http://confluence.jetbrains.com/display/TCD7/Build+Script+Interaction+with+TeamCity).  When a build finishes, it writes a message to STDOUT something like this: `##teamcity\[stop_builds_in_project 'queued,running'\]`.  The ServiceMessageTranslator's `translate()` callback receives a handle to the running build; from there it figures out its project, then the project's builds that are queued and/or running, and then de-queues and stops those builds as necessary.
+The **custom-svc-msgs** plugin listens via the [ServiceMessageTranslator](http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/messages/serviceMessages/ServiceMessageTranslator.html) interface for messages sent according to the [TeamCity Service Message API](http://confluence.jetbrains.com/display/TCD7/Build+Script+Interaction+with+TeamCity).  When a build finishes, it writes a message to STDOUT something like this: `##teamcity[stop_builds_in_project 'queued,running']`.  The ServiceMessageTranslator's `translate()` callback receives a handle to the running build; from there it figures out its project, then the project's builds that are queued and/or running, and then de-queues and stops those builds as necessary.
 
 Features
 ------
